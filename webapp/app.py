@@ -27,7 +27,7 @@ app = FlaskBase(
     template_500="500.html",
 )
 
-app.secret_key = os.environ["SECRET_KEY"]
+app.secret_key = os.environ["SECRET_KEY"] = "secret_key"
 
 open_id = OpenID(
     stateless=True, safe_roots=[], extension_responses=[MacaroonResponse]
