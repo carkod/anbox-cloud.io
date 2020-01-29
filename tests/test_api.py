@@ -24,4 +24,7 @@ class TestApi(unittest.TestCase):
 
     def test_api_requests_401(self):
         response = _api_request("1.0/instances")
-        self.assertEqual(response, 401)
+		self.assertEqual(http_error.exception.code, 401)
+        with self.assertRaises(HTTPException) as http_error:
+            self.view.validate_request()
+            self.assertEqual(http_error.exception.code, 401)
