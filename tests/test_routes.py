@@ -42,8 +42,12 @@ class TestRoutes(unittest.TestCase):
         Demo page should redirect to login if no session.
         """
         response = self.client.get("/demo")
+        demo_uri = "http://localhost/login?next=/demo"
+        with self.client.session_transaction() as s:
+            self.assertTrue("authentication_token" not in s)
+            self.assertFalse("macaroon_root" in s)
         self.assertEqual(self.client.get("/demo").status_code, 302)
-        self.assertEqual(response.location, "http://localhost/login?next=/demo")
+        self.assertEqual(response.location, demo_uri)
 
     def test_demo_login(self):
         """
