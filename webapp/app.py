@@ -13,9 +13,7 @@ from posixpath import join as url_join
 
 
 LOGIN_URL = "https://login.ubuntu.com"
-# Only works with VPN
-# Change when deployed to production
-ANBOXCLOUD_API_BASE = "https://staging.demo-api.anbox-cloud.io/"
+ANBOXCLOUD_API_BASE = "https://demo-api.anbox-cloud.io"
 
 session = requests.Session()
 app = FlaskBase(
@@ -40,7 +38,11 @@ def _api_request(url_path, method="GET", params=None, json=None, headers=None):
 
     response = session.request(
         method,
+<<<<<<< HEAD
         url_join(ANBOXCLOUD_API_BASE, url_path),
+=======
+        f"{ANBOXCLOUD_API_BASE.rstrip('/')}/{url_join(url_path).lstrip('/')}",
+>>>>>>> 3920afc74a3575d22015df72065f1e3051f3b8e4
         params=params,
         json=json,
         headers=headers,
@@ -78,6 +80,16 @@ def index():
 @app.route("/thank-you")
 def thank_you():
     return flask.render_template("thank-you.html")
+
+
+@app.route("/terms")
+def terms():
+    return flask.render_template("terms.html")
+
+
+@app.route("/privacy")
+def privacy():
+    return flask.render_template("privacy.html")
 
 
 @open_id.after_login
@@ -133,7 +145,7 @@ def add_headers(response):
 @app.route("/logout")
 def logout():
     """
-    Empty the session, used to logout.
+    Logout by removing the `authentication_token` from the session
     """
     flask.session.pop("authentication_token", None)
 
@@ -145,12 +157,11 @@ def logout():
 def login_handler():
     if "authentication_token" in flask.session:
         return flask.redirect(open_id.get_next_url())
-
+    flask.session["invitation_code"] = request.args.get("invitation_code")
     response = _api_request(
-        url_path="1.0/token", method="GET", params={"provider": "usso"}
+        url_path="/1.0/token", method="GET", params={"provider": "usso"}
     )
     root = response["metadata"]["token"]
-    flask.session["invitation_code"] = request.args.get("invitation_code")
     location = urlparse(LOGIN_URL).hostname
     (caveat,) = [
         c
@@ -172,6 +183,7 @@ def demo():
     authorization_header = {
         "Authorization": f"macaroon root={authentication_token}"
     }
+<<<<<<< HEAD
     response = requests.get(
         url=f"{ANBOXCLOUD_API_BASE}1.0/instances",
         headers=authorization_header,
@@ -182,6 +194,12 @@ def demo():
         error = e.response.json()
         return flask.render_template("401.html", error=error["error"])
     return flask.render_template("demo.html")
+=======
+    _api_request("/1.0/instances", headers=authorization_header)
+    return flask.render_template(
+        "demo.html", ANBOXCLOUD_API_BASE=ANBOXCLOUD_API_BASE
+    )
+>>>>>>> 3920afc74a3575d22015df72065f1e3051f3b8e4
 
 
 @app.errorhandler(401)

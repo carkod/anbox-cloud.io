@@ -43,9 +43,12 @@ class TestRoutes(unittest.TestCase):
         """
         response = self.client.get("/demo")
         demo_uri = "http://localhost/login?next=/demo"
+<<<<<<< HEAD
         with self.client.session_transaction() as s:
             self.assertTrue("authentication_token" not in s)
             self.assertFalse("macaroon_root" in s)
+=======
+>>>>>>> 3920afc74a3575d22015df72065f1e3051f3b8e4
         self.assertEqual(self.client.get("/demo").status_code, 302)
         self.assertEqual(response.location, demo_uri)
 
@@ -65,6 +68,18 @@ class TestRoutes(unittest.TestCase):
         self.test_demo_login()
         self.assertEqual(self.client.get("/logout").status_code, 302)
 
+    def test_terms(self):
+        """
+        When given the index URL,
+        we should return a 200 status code
+        """
 
-if __name__ == "__main__":
-    unittest.main()
+        self.assertEqual(self.client.get("/terms").status_code, 200)
+
+    def test_privacy(self):
+        """
+        When given the index URL,
+        we should return a 200 status code
+        """
+
+        self.assertEqual(self.client.get("/privacy").status_code, 200)
