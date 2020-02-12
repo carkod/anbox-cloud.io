@@ -207,4 +207,6 @@ def handle_unauthorised(error):
     """
     Handle 401 errors using flask as opposed to requests
     """
+    flask.session.pop("authentication_token", None)
+    # return flask.redirect("/login?next=" + flask.request.path)
     return flask.render_template("401.html", error=error.description), 401

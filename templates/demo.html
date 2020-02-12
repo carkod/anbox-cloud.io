@@ -7,31 +7,33 @@
 {% block content %}
 <script type="module">
   import AnboxStream from '/static/js/anbox-stream-sdk.js';
-
-  let stream = new AnboxStream({
-  targetElement: "anbox-stream",
-  url: '{{ ANBOXCLOUD_API_BASE }}',
-  authToken: '{{ session["authentication_token"] }}',
-  session: {
-      app: "com.vectorunit.cobalt.canonical", // Given
-  },
-  screen: {
-    // Currently available max resolution
-    // To change to portrait just flip the values between width and height
-      width: 1280,
-      height: 720,
-  },
-  // Using keyboard controls to test it on non-touch device
-  controls: {
-    keyboard: true
-  },
-  callbacks: {
-    error: error => {
-      console.log("AnboxStream failed: " + error.message);
+  function buggyRacing() {
+    let stream = new AnboxStream({
+    targetElement: "anbox-stream",
+    url: '{{ ANBOXCLOUD_API_BASE }}',
+    authToken: '{{ session["authentication_token"] }}',
+    session: {
+        app: "com.vectorunit.cobalt.canonical", // Given
+    },
+    screen: {
+      // Currently available max resolution
+      // To change to portrait just flip the values between width and height
+        width: 1280,
+        height: 720,
+    },
+    // Using keyboard controls to test it on non-touch device
+    controls: {
+      keyboard: true
+    },
+    callbacks: {
+      error: error => {
+        console.log("AnboxStream failed: " + error.message);
+      }
     }
+  });
+  stream.connect();
   }
-});
-stream.connect();
+  document.querySelector('#buggy-racing').addEventListener('click', buggyRacing)
 
 </script>
 
@@ -45,6 +47,7 @@ stream.connect();
 <section class="p-strip--dark is-bordered">
   <div class="row">
     <div class="col-12 u-align--center">
+      <button type="button" id="buggy-racing">Click here to start anbox stream</button>
       <div id="anbox-stream"></div>
       <!-- <img src="https://via.placeholder.com/1280x720" alt=""> -->
     </div>

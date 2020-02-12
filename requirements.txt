@@ -3,3 +3,4 @@ Flask-OpenID-Stateless==1.2.6
 requests==2.22.0
 responses==0.10.9
 pymacaroons==0.13.0
+vcrpy-unittest==0.1.7
